@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <meta
+        name="description"
+        content="Explore probabilistic cellular automata with an interactive forest fire simulation."
+    >
+
+    <title>Forest Fire Simulator | jenga-code</title>
+
+    <link rel="stylesheet" href="css/style.css?v=3">
+
+    <script
+        src="https://code.jquery.com/jquery-3.7.1.min.js"
+        defer
+    ></script>
+
+    <script src="js/ForestWorld.js" defer></script>
+    <script src="js/ForestRenderer.js" defer></script>
+    <script src="js/app.js" defer></script>
+</head>
+
+
+<body id="top">
+
+    <!-- =========================================================
+         SHARED JENGA-CODE HEADER
+         ========================================================= -->
+
+    <header class="site-header">
+
+        <div class="header-inner">
+
+            <a href="../../" class="site-logo">
+
+                <span
+                    class="logo-fallback"
+                    aria-hidden="true"
+                >
+                    jenga<span>-code</span>
+                </span>
+
+                <img
+                    class="logo-image"
+                    src="../../images/logo.png"
+                    alt="jenga-code home"
+                    width="200"
+                    height="50"
+                    onload="this.previousElementSibling.hidden=true"
+                    onerror="this.hidden=true"
+                >
+
+            </a>
+
+
+            <nav
+                class="main-nav"
+                aria-label="Main navigation"
+            >
+                <a href="../../">Home</a>
+
+                <a
+                    href="../../projects/"
+                    class="active"
+                    aria-current="location"
+                >
+                    Projects
+                </a>
+
+                <a href="../../subjects/">Subjects</a>
+                <a href="../../tutorials/">Tutorials</a>
+                <a href="../../blog/">Blog</a>
+                <a href="../../about/">About</a>
+                <a href="../../contact/">Contact</a>
+            </nav>
+
+
+            <div class="header-actions">
+
+                <a
+                    href="https://github.com/GeorgeMillerGraduate"
+                    class="social-link"
+                    aria-label="GitHub"
+                >
+                    GH
+                </a>
+
+                <a
+                    href="../../blog/feed/"
+                    class="social-link"
+                    aria-label="RSS feed"
+                >
+                    RSS
+                </a>
+
+                <a
+                    href="../../blog/"
+                    class="subscribe-button"
+                >
+                    Read the blog
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <main>
+
+        <!-- =========================================================
+             SIMPLE PAGE HEADING
+             ========================================================= -->
+
+        <div class="page-heading">
+
+            <div>
+
+                <p class="eyebrow">
+                    <a href="../../projects/">THE PLAYGROUND</a>
+                    <span>/</span>
+                    CELLULAR AUTOMATA
+                </p>
+
+                <h1>
+                    Forest fire simulator<span>.</span>
+                </h1>
+
+            </div>
+
+            <p>
+                Grow a forest. Ignite it. Watch probability take over.
+            </p>
+
+        </div>
+
+
+        <!-- =========================================================
+             SIMULATION STUDIO
+             ========================================================= -->
+
+        <section
+            class="studio"
+            id="experiment"
+        >
+
+            <header class="studio-heading">
+
+                <div>
+
+                    <p class="eyebrow">
+                        PROBABILISTIC CELLULAR AUTOMATON
+                    </p>
+
+                    <h2>
+                        Forest evolution
+                    </h2>
+
+                </div>
+
+                <strong id="simulationState">
+                    READY
+                </strong>
+
+            </header>
+
+
+            <div class="workspace">
+
+                <!-- =================================================
+                     CONTROLS
+                     ================================================= -->
+
+                <aside class="controls">
+
+                    <div class="control-section">
+
+                        <h3>Environment</h3>
+
+
+                        <div class="range-control">
+
+                            <div class="control-label-row">
+
+                                <label for="treeDensity">
+                                    Tree density
+                                </label>
+
+                                <span id="treeDensityValue">
+                                    70%
+                                </span>
+
+                            </div>
+
+                            <input
+                                id="treeDensity"
+                                type="range"
+                                min="10"
+                                max="100"
+                                value="70"
+                            >
+
+                        </div>
+
+
+                        <div class="range-control">
+
+                            <div class="control-label-row">
+
+                                <label for="spreadProbability">
+                                    Fire spread
+                                </label>
+
+                                <span id="spreadProbabilityValue">
+                                    75%
+                                </span>
+
+                            </div>
+
+                            <input
+                                id="spreadProbability"
+                                type="range"
+                                min="0"
+                                max="100"
+                                value="75"
+                            >
+
+                        </div>
+
+
+                        <div class="range-control">
+
+                            <div class="control-label-row">
+
+                                <label for="growthProbability">
+                                    Tree growth
+                                </label>
+
+                                <span id="growthProbabilityValue">
+                                    2%
+                                </span>
+
+                            </div>
+
+                            <input
+                                id="growthProbability"
+                                type="range"
+                                min="0"
+                                max="20"
+                                value="2"
+                            >
+
+                        </div>
+
+
+                        <div class="range-control">
+
+                            <div class="control-label-row">
+
+                                <label for="lightningProbability">
+                                    Lightning
+                                </label>
+
+                                <span id="lightningProbabilityValue">
+                                    0.1%
+                                </span>
+
+                            </div>
+
+                            <input
+                                id="lightningProbability"
+                                type="range"
+                                min="0"
+                                max="20"
+                                value="1"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SPEED -->
+
+                    <div class="control-section">
+
+                        <h3>Simulation</h3>
+
+                        <div class="range-control">
+
+                            <div class="control-label-row">
+
+                                <label for="simulationSpeed">
+                                    Speed
+                                </label>
+
+                                <span id="simulationSpeedValue">
+                                    50 ms
+                                </span>
+
+                            </div>
+
+                            <input
+                                id="simulationSpeed"
+                                type="range"
+                                min="10"
+                                max="500"
+                                step="10"
+                                value="50"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- WIND -->
+
+                    <div class="control-section">
+
+                        <h3>Wind</h3>
+
+                        <div class="control-label-row">
+
+                            <label>
+                                Direction
+                            </label>
+
+                            <span class="wind-value">
+                                DIRECTION
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="wind-control"
+                            aria-label="Wind direction"
+                        >
+
+                            <button
+                                class="wind-button"
+                                data-direction="north"
+                                title="North"
+                                type="button"
+                                aria-label="Wind north"
+                            >
+                                ↑
+                            </button>
+
+
+                            <div class="wind-middle">
+
+                                <button
+                                    class="wind-button"
+                                    data-direction="west"
+                                    title="West"
+                                    type="button"
+                                    aria-label="Wind west"
+                                >
+                                    ←
+                                </button>
+
+                                <button
+                                    class="wind-button active"
+                                    data-direction="none"
+                                    title="No wind"
+                                    type="button"
+                                    aria-label="No wind"
+                                >
+                                    •
+                                </button>
+
+                                <button
+                                    class="wind-button"
+                                    data-direction="east"
+                                    title="East"
+                                    type="button"
+                                    aria-label="Wind east"
+                                >
+                                    →
+                                </button>
+
+                            </div>
+
+
+                            <button
+                                class="wind-button"
+                                data-direction="south"
+                                title="South"
+                                type="button"
+                                aria-label="Wind south"
+                            >
+                                ↓
+                            </button>
+
+                        </div>
+
+
+                        <div class="range-control wind-strength">
+
+                            <div class="control-label-row">
+
+                                <label for="windStrength">
+                                    Strength
+                                </label>
+
+                                <span id="windStrengthValue">
+                                    0%
+                                </span>
+
+                            </div>
+
+                            <input
+                                id="windStrength"
+                                type="range"
+                                min="0"
+                                max="100"
+                                value="0"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FOREST TOOLS -->
+
+                    <div class="control-section">
+
+                        <h3>Drawing tool</h3>
+
+                        <p class="control-help">
+                            Click or drag directly on the forest.
+                        </p>
+
+
+                        <div class="tool-buttons">
+
+                            <button
+                                class="tool-button active"
+                                data-tool="fire"
+                                type="button"
+                            >
+                                <span class="tool-symbol fire-symbol"></span>
+                                Fire
+                            </button>
+
+                            <button
+                                class="tool-button"
+                                data-tool="tree"
+                                type="button"
+                            >
+                                <span class="tool-symbol tree-symbol"></span>
+                                Tree
+                            </button>
+
+                            <button
+                                class="tool-button"
+                                data-tool="erase"
+                                type="button"
+                            >
+                                <span class="tool-symbol empty-symbol"></span>
+                                Clear
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- GENERATE -->
+
+                    <div class="button-stack">
+
+                        <button
+                            id="generateForest"
+                            class="primary"
+                            type="button"
+                        >
+                            Generate forest →
+                        </button>
+
+                        <div>
+
+                            <button
+                                id="startButton"
+                                type="button"
+                            >
+                                Start
+                            </button>
+
+                            <button
+                                id="pauseButton"
+                                type="button"
+                            >
+                                Pause
+                            </button>
+
+                            <button
+                                id="stepButton"
+                                type="button"
+                            >
+                                Step
+                            </button>
+
+                        </div>
+
+
+                        <button
+                            id="resetButton"
+                            class="reset-full"
+                            type="button"
+                        >
+                            Reset
+                        </button>
+
+                    </div>
+
+                </aside>
+
+
+                <!-- =================================================
+                     VISUALISER
+                     ================================================= -->
+
+                <section class="render-panel">
+
+                    <div class="canvas-heading">
+
+                        <span>
+                            FOREST
+                        </span>
+
+                        <small>
+                            Click or drag to edit cells
+                        </small>
+
+                    </div>
+
+
+                    <div class="canvas-shell">
+
+                        <canvas id="forestCanvas"></canvas>
+
+                        <div
+                            class="canvas-message"
+                            id="canvasMessage"
+                        >
+                            Generate a forest to begin.
+                        </div>
+
+                    </div>
+
+
+                    <!-- STATS -->
+
+                    <div class="render-stats">
+
+                        <span>
+
+                            <small>
+                                GENERATION
+                            </small>
+
+                            <b id="generationCount">
+                                0
+                            </b>
+
+                        </span>
+
+
+                        <span>
+
+                            <small>
+                                TREES
+                            </small>
+
+                            <b id="treeCount">
+                                0
+                            </b>
+
+                        </span>
+
+
+                        <span>
+
+                            <small>
+                                BURNING
+                            </small>
+
+                            <b id="burningCount">
+                                0
+                            </b>
+
+                        </span>
+
+
+                        <span>
+
+                            <small>
+                                MODEL
+                            </small>
+
+                            <b>
+                                PROBABILISTIC
+                            </b>
+
+                        </span>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- =====================================================
+                 CELL LEGEND
+                 ===================================================== -->
+
+            <section class="legend-panel">
+
+                <div class="legend-title">
+
+                    <p class="eyebrow">
+                        CELL STATES
+                    </p>
+
+                    <h3>
+                        Forest legend
+                    </h3>
+
+                </div>
+
+
+                <div class="legend-items">
+
+                    <div class="legend-item">
+
+                        <span class="legend-cell empty"></span>
+
+                        <span>
+                            <strong>Empty</strong>
+                            <small>No vegetation</small>
+                        </span>
+
+                    </div>
+
+
+                    <div class="legend-item">
+
+                        <span class="legend-cell tree"></span>
+
+                        <span>
+                            <strong>Tree</strong>
+                            <small>Living vegetation</small>
+                        </span>
+
+                    </div>
+
+
+                    <div class="legend-item">
+
+                        <span class="legend-cell burning"></span>
+
+                        <span>
+                            <strong>Burning</strong>
+                            <small>Spreading fire</small>
+                        </span>
+
+                    </div>
+
+
+                    <div class="legend-item">
+
+                        <span class="legend-cell burnt"></span>
+
+                        <span>
+                            <strong>Burnt</strong>
+                            <small>Recently destroyed</small>
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </section>
+
+
+        <!-- =========================================================
+             SIMPLE EXPLANATION
+             ========================================================= -->
+
+        <div
+            class="footnote"
+            id="about-project"
+        >
+
+            <p>
+                Trees spread fire probabilistically according to neighbouring
+                cells, while growth, lightning and wind continuously alter
+                the system.
+            </p>
+
+
+            <details>
+
+                <summary>
+                    How it works
+                </summary>
+
+                <p>
+                    Each position is a cell with a state such as empty, tree,
+                    burning or burnt. On every generation the automaton checks
+                    neighbouring cells and applies the selected probabilities.
+                    Trees near fire may ignite, empty cells may grow new trees,
+                    lightning can create independent fires, and wind biases
+                    fire spread in a chosen direction.
+                </p>
+
+            </details>
+
+        </div>
+
+
+        <!-- =========================================================
+             FOOTER
+             ========================================================= -->
+
+        <footer>
+
+            <a
+                class="brand"
+                href="../../"
+            >
+                jenga<span>-code</span>
+            </a>
+
+            <span>
+                Built with curiosity.
+            </span>
+
+
+            <nav aria-label="Footer navigation">
+
+                <a href="../../projects/">
+                    Projects
+                </a>
+
+                <a href="../../blog/">
+                    Blog
+                </a>
+
+                <a href="../../contact/">
+                    Contact
+                </a>
+
+            </nav>
+
+        </footer>
+
+    </main>
+
+</body>
+
+</html>
